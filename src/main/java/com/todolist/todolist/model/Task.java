@@ -6,12 +6,18 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
 
 @Entity
 public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+
+
+    // Fields
     private int id;
 
     private String title;
@@ -19,6 +25,9 @@ public class Task {
     private LocalDate dueDate;
     private String category;
     private Priority priority;
+    @ManyToOne
+    @JoinColumn (name = "user_id")
+    private User user;
 
     // Constructor
     public Task(String title) {
@@ -27,7 +36,7 @@ public class Task {
         this.priority = Priority.MEDIUM;
     }
 
-    // Default constructor (required by JPA)
+    // Default constructor 
     public Task() {}
 
     // Getters and Setters
@@ -48,4 +57,7 @@ public class Task {
 
     public Priority getPriority() { return priority; }
     public void setPriority(Priority priority) { this.priority = priority; }
+
+    public User getUser(){ return user; }
+    public void setUser(User user){ this.user = user; }
 }
