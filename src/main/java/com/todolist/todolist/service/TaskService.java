@@ -93,4 +93,10 @@ public class TaskService {
             taskRepository.save(task);
         }
     }
+    public void addTaskForUser(String title, int userId ){
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        Task task = new Task(title);
+        task.setUser(user);
+        taskRepository.save(task);
+    }
 }
