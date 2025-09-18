@@ -26,7 +26,7 @@ public class TaskController {
     }
 
     @PostMapping
-    public void addTask(@RequestParam String title) {
+    public void addTask(@RequestBody String title) {
         taskService.addTask(title);
     }
 
@@ -45,12 +45,12 @@ public class TaskController {
     }
 
     @PutMapping("/{id}/edit")
-    public void editTask(@PathVariable int id, @RequestParam String title) {
+    public void editTask(@PathVariable int id, @RequestBody String title) {
         taskService.editTaskTitle(id, title);
     }
 
     @PutMapping("/{id}/due-date")
-    public void setDueDate(@PathVariable int id, @RequestParam String date) {
+    public void setDueDate(@PathVariable int id, @RequestBody String date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
         LocalDate localDate = LocalDate.parse(date, formatter);
         taskService.setDueDate(id, localDate);
