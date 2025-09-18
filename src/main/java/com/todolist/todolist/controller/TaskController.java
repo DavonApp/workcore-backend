@@ -57,12 +57,12 @@ public class TaskController {
     }
 
     @PutMapping("/{id}/category")
-    public void setCategory(@PathVariable int id, @RequestParam String category) {
+    public void setCategory(@PathVariable int id, @RequestBody String category) {
         taskService.setCategory(id, category);
     }
 
     @PutMapping("/{id}/priority")
-    public void setPriority(@PathVariable int id, @RequestParam String priority) {
+    public void setPriority(@PathVariable int id, @RequestBody String priority) {
         taskService.setPriority(id, Priority.valueOf(priority.toUpperCase()));
     }
 
