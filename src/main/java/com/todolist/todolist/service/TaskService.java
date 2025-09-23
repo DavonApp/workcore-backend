@@ -28,8 +28,12 @@ public class TaskService {
         return taskRepository.findAll();
     }
 
-    public void addTask(String title) {
-        Task task = new Task(title);
+    public Task getTaskByID(int id){
+        return taskRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Task not found with id: " + id));
+    }
+
+    public void addTask(Task task) {
         taskRepository.save(task);
     }
 
@@ -93,10 +97,46 @@ public class TaskService {
             taskRepository.save(task);
         }
     }
+    public void setDescription(int id, String description){
+        Optional<Task> optionalTask = taskRepository.findById(id);
+        if(optionalTask.isPresent()){
+            Task task = optionalTask.get();
+            task.setDescription(description);
+            taskRepository.save(task);
+        }
+    }
     public void addTaskForUser(String title, int userId ){
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         Task task = new Task(title);
         task.setUser(user);
         taskRepository.save(task);
+    }
+
+    public void updateTask(int id, Task updatedTask){
+        Optional<Task> optionalTask = taskRepository.findById(id);
+
+        if (optionalTask.isPresent()){
+            Task existingTask = optionalTask.get();
+
+            if(updatedTask.getTitle() != null){
+                existingTask.setTitle(updatedTask.getTitle());
+            }
+            if(updatedTask.getDescription() != null){
+                existingTask.setDescription(updatedTask.getDescription());
+            }
+            if(updatedTask.getCategory() != null){
+                existingTask.setCategory(updatedTask.getCategory());
+            }
+            if(updatedTask.getPriority() != null){
+                existingTask.setPriority(updatedTask.getPriority());
+            }
+            if(updatedTask.getDueDate() != null){
+                existingTask.setDueDate(updatedTask.getDueDate());
+            }
+
+            existingTask.setCompletion(updatedTask.getIsCompleted());
+
+            taskRepository.save(existingTask);
+        }
     }
 }

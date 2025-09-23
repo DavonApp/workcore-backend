@@ -40,8 +40,8 @@ public class TaskController {
     
 
     @PostMapping
-    public void addTask(@RequestBody String title) {
-        taskService.addTask(title);
+    public void addTask(@RequestBody Task task) {
+        taskService.addTask(task);
     }
 
     @DeleteMapping("/{id}")
@@ -49,41 +49,9 @@ public class TaskController {
         taskService.deleteTask(id);
     }
 
-    @PutMapping("/{id}/complete")
-    public void completeTask(@PathVariable int id){
-        taskService.markAsCompleted(id);
+    @PutMapping("/{id}")
+    public void updateTask(@PathVariable int id, @RequestBody Task updatedTask) {
+        taskService.updateTask(id, updatedTask);
     }
-    @PutMapping("/{id}/uncomplete")
-    public void uncompleteTask(@PathVariable int id) {
-        taskService.unmarkAsCompleted(id);
-    }
-
-    @PutMapping("/{id}/edit")
-    public void editTask(@PathVariable int id, @RequestBody String title) {
-        taskService.editTaskTitle(id, title);
-    }
-
-    @PutMapping("/{id}/due-date")
-    public void setDueDate(@PathVariable int id, @RequestBody String date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-        LocalDate localDate = LocalDate.parse(date, formatter);
-        taskService.setDueDate(id, localDate);
-    }
-
-    @PutMapping("/{id}/description")
-    public void setDescription(@PathVariable int id, @RequestBody String description) {
-        taskService.setDescription(id, description);
-    }
-
-    @PutMapping("/{id}/category")
-    public void setCategory(@PathVariable int id, @RequestBody String category) {
-        taskService.setCategory(id, category);
-    }
-
-    @PutMapping("/{id}/priority")
-    public void setPriority(@PathVariable int id, @RequestBody PriorityRequest request) {
-        taskService.setPriority(id, Priority.valueOf(request.getPriority().toUpperCase()));
-    }
-
 
 }
