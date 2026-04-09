@@ -8,9 +8,9 @@ import com.todolist.todolist.model.Priority;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Optional;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Service
 public class TaskService {
@@ -81,6 +81,14 @@ public class TaskService {
             taskRepository.save(task);
         }
     }
+    public void setDueTime(int id, LocalTime time){
+    Optional<Task> optionalTask = taskRepository.findById(id);
+    if(optionalTask.isPresent()){
+        Task task = optionalTask.get();
+        task.setDueTime(time);
+        taskRepository.save(task);
+    }
+    }
     public void setCategory(int id, String category){
         Optional<Task> optionalTask = taskRepository.findById(id);
         if(optionalTask.isPresent()){
@@ -132,6 +140,9 @@ public class TaskService {
             }
             if(updatedTask.getDueDate() != null){
                 existingTask.setDueDate(updatedTask.getDueDate());
+            }
+            if(updatedTask.getDueTime() != null){
+                existingTask.setDueTime(updatedTask.getDueTime());
             }
 
             existingTask.setCompletion(updatedTask.getIsCompleted());
