@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = "http://localhost:5500")
 @RestController
 @RequestMapping("/api/tasks")
 public class TaskController {
@@ -40,8 +40,9 @@ public class TaskController {
     
 
     @PostMapping
-    public void addTask(@RequestBody Task task) {
+    public Task addTask(@RequestBody Task task) {
         taskService.addTask(task);
+        return task;
     }
 
     @DeleteMapping("/{id}")

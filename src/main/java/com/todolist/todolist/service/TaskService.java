@@ -33,8 +33,8 @@ public class TaskService {
                 .orElseThrow(() -> new RuntimeException("Task not found with id: " + id));
     }
 
-    public void addTask(Task task) {
-        taskRepository.save(task);
+    public Task addTask(Task task) {
+        return taskRepository.save(task);
     }
 
     public void deleteTask(int id) {
