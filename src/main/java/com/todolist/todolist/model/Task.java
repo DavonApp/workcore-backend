@@ -1,6 +1,7 @@
 package com.todolist.todolist.model;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,6 +25,7 @@ public class Task {
     private String description;
     private boolean isCompleted;
     private LocalDate dueDate;
+    private LocalTime dueTime;
     private String category;
     private Priority priority;
     @ManyToOne
@@ -75,6 +77,13 @@ public class Task {
     }
     public void setDueDate(LocalDate dueDate) { 
         this.dueDate = dueDate; 
+    }
+
+    public LocalTime getDueTime() {
+        return dueTime;
+    }
+    public void setDueTime(LocalTime dueTime) {
+        this.dueTime = dueTime;
     }
 
     public String getCategory() { 
