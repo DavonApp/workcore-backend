@@ -26,5 +26,7 @@ public class EmailService {
                 "Message:\n" + form.getMessage() 
         );
 
+        mailSender.send(message);
+
     }
 }
