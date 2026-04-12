@@ -10,11 +10,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final BCryptPasswordEncoder passwordEncoder;
 
     // Constructor Injection
-    public UserService(UserRepository userRepository){
+    // Spring injects BCryptPasswordEncoder bean from SecurityConfig
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder){
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public User registerUser (String email, String password){
@@ -26,6 +28,21 @@ public class UserService {
         // Hash password before storing 
         User user = new User(email, passwordEncoder.encode(password));
         userRepository.save(user);
+        return user;
+    }
+
+    // Validates credentials and returns the user if correct
+    public User loginUser(String email, String password) {
+        User user = userRepository.findByEmail(email);
+
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
+        // BCrypt compares raw password against stored hash
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new RuntimeException("Invalid password");
+        }
+
         return user;
     }
 }
