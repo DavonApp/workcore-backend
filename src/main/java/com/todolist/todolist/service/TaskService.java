@@ -24,8 +24,10 @@ public class TaskService {
         this.userRepository = userRepository;
     }  
 
-    public List<Task> getAllTasks() {
-        return taskRepository.findAll();
+    public List<Task> getTasksForUser(int userId) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+            return taskRepository.findByUser(user);
     }
 
     public Task getTaskByID(int id){
@@ -33,16 +35,19 @@ public class TaskService {
                 .orElseThrow(() -> new RuntimeException("Task not found with id: " + id));
     }
 
-    public Task addTask(Task task) {
-        return taskRepository.save(task);
+    public Task addTask(Task task, int userId) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+            task.setUser(user);
+            return taskRepository.save(task);
     }
 
-    public void deleteTask(int id) {
-        if(taskRepository.existsById(id)){
-            taskRepository.deleteById(id);
-        } else {
-            throw new RuntimeException("Task not found");
-        }
+    public void deleteTask(int id, int userId) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("Uesr not found"));
+        Task task = taskRepository.findByIdAndUser(id, user)
+            .orElseThrow(() -> new RuntimeException("Task not found or not yours"));
+            taskRepository.delete(task);
     }
 
     public void markAsCompleted(int id) {
@@ -120,11 +125,13 @@ public class TaskService {
         taskRepository.save(task);
     }
 
-    public void updateTask(int id, Task updatedTask){
-        Optional<Task> optionalTask = taskRepository.findById(id);
+    public void updateTask(int id, Task updatedTask, int userId){
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (optionalTask.isPresent()){
-            Task existingTask = optionalTask.get();
+        Task existingTask = taskRepository.findByIdAndUser(id, user)
+            .orElseThrow(() -> new RuntimeException("Task not found or not yours"));
+
 
             if(updatedTask.getTitle() != null){
                 existingTask.setTitle(updatedTask.getTitle());
@@ -148,6 +155,5 @@ public class TaskService {
             existingTask.setCompletion(updatedTask.getIsCompleted());
 
             taskRepository.save(existingTask);
-        }
     }
 }

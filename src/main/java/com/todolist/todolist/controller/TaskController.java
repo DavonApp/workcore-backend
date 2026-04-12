@@ -20,30 +20,24 @@ public class TaskController {
     }
 
     @GetMapping
-    public List<Task> getAllTasks() {
-        return taskService.getAllTasks();
-    }
-    
-    @GetMapping("/{id}")
-    public Task getTaskByID(@PathVariable int id) {
-        return taskService.getTaskByID(id);
+    public List<Task> getAllTasks(@RequestParam int userId) {
+        return taskService.getTasksForUser(userId);
     }
     
 
     @PostMapping
-    public Task addTask(@RequestBody Task task) {
-        taskService.addTask(task);
-        return task;
+    public Task addTask(@RequestBody Task task, @RequestParam int userId) {
+        return taskService.addTask(task, userId);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteTask(@PathVariable int id){
-        taskService.deleteTask(id);
+    public void deleteTask(@PathVariable int id, @RequestParam int userId){
+        taskService.deleteTask(id, userId);
     }
 
     @PutMapping("/{id}")
-    public void updateTask(@PathVariable int id, @RequestBody Task updatedTask) {
-        taskService.updateTask(id, updatedTask);
+    public void updateTask(@PathVariable int id, @RequestBody Task updatedTask, @RequestParam int userId) {
+        taskService.updateTask(id, updatedTask, userId);
     }
 
 }
