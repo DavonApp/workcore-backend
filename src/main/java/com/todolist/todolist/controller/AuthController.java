@@ -3,6 +3,9 @@ package com.todolist.todolist.controller;
 import com.todolist.todolist.dto.AuthRequest;
 import com.todolist.todolist.model.User;
 import com.todolist.todolist.service.UserService;
+
+import jakarta.servlet.http.HttpSession;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,9 +33,29 @@ public class AuthController {
     
 
     @PostMapping("/login") 
-    public ResponseEntity<?> login(@RequestBody AuthRequest req) {
-        // Endpoint placeholder
-        return ResponseEntity.ok("Login endpoint is ready");
+    public ResponseEntity<?> login(@RequestBody AuthRequest req, HttpSession session) {
+        try {
+            User user = userService.loginUser(req.getEmail(), req.getPassword());
+
+            // Store user ID in the session (so we know who is logged in)
+            session.setAttribute("userId", user.getId());
+
+            return ResponseEntity.ok(
+                java.util.Map.of("message", "Login successful", "userId", user.getId())
+            );
+        } catch (RuntimeException e) {
+            return ResponseEntity.ok("Login endpoint is ready");
+        }
+    }
+
+    // Allows frontend to check if the user is still logged in
+    @GetMapping("/me")
+    public ResponseEntity<?> me(HttpSession session) {
+        Integer userId = (Integer) session.getAttribute("userId");
+        if (userId == null) {
+            return ResponseEntity.status(401).body("Not logged in");
+        }
+        return ResponseEntity.ok(java.util.Map.of("userId", userId));
     }
 
     
