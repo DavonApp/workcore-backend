@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = {"http://localhost:5500", "http://127.0.0.1:5500"})
 public class AuthController {
     
     private final UserService userService;
@@ -40,11 +39,14 @@ public class AuthController {
             // Store user ID in the session (so we know who is logged in)
             session.setAttribute("userId", user.getId());
 
+            System.out.println("LOGIN SESSION: " + session.getId());
+            System.out.println("SET USER ID: " + user.getId());
+
             return ResponseEntity.ok(
                 java.util.Map.of("message", "Login successful", "userId", user.getId())
             );
         } catch (RuntimeException e) {
-            return ResponseEntity.ok("Login endpoint is ready");
+            return ResponseEntity.status(401).body("Invalid email or password");
         }
     }
 

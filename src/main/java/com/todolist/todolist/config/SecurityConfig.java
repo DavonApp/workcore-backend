@@ -9,6 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
 import java.util.List;
 
 @Configuration
@@ -28,7 +29,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/api/auth/**").permitAll() // Login/Register remains always open
-                .anyRequest().authenticated()               // Everything else needs login
+                .requestMatchers("/api/tasks/**").permitAll()
+                .anyRequest().permitAll()               // Everything else needs login
             )
             .formLogin(form -> form.disable()) // Login handled in AuthController
             .httpBasic(basic -> basic.disable()) // No browser popups

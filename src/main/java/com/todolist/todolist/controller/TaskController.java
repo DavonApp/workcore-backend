@@ -11,7 +11,6 @@ import java.util.List;
 
 
 
-@CrossOrigin(origins = {"http://localhost:5500", "http://127.0.0.1:5500"})
 @RestController
 @RequestMapping("/api/tasks")
 public class TaskController {
@@ -30,6 +29,9 @@ public class TaskController {
 
     @GetMapping
     public List<Task> getAllTasks(HttpSession session) {
+        System.out.println("TASK SESSION: " + session.getId());
+        System.out.println("USER ID: " + session.getAttribute("userId"));
+        
         return taskService.getTasksForUser(getUserIdFromSession(session));
     }
     
