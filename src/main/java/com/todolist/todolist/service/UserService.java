@@ -3,6 +3,9 @@ package com.todolist.todolist.service;
 import com.todolist.todolist.model.User;
 import com.todolist.todolist.repository.UserRepository;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 
@@ -82,6 +85,10 @@ public class UserService {
 
         // Save new password
         user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        // Set the update timestamp
+        user.setPasswordLastChanged(LocalDateTime.now());
         userRepository.save(user);
     }
 }
