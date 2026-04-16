@@ -38,6 +38,7 @@ public class AuthController {
             User user = userService.loginUser(req.getEmail(), req.getPassword());
 
             // Store user ID in the session (so we know who is logged in)
+            session.setAttribute("user", user);
             session.setAttribute("userId", user.getId());
 
             System.out.println("LOGIN SESSION: " + session.getId());
@@ -61,7 +62,7 @@ public class AuthController {
         return ResponseEntity.ok(java.util.Map.of("userId", userId));
     }
 
-    @PostMapping("/api/auth/logout")
+    @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if (session != null) session.invalidate();
