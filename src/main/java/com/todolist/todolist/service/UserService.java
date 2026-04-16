@@ -45,4 +45,17 @@ public class UserService {
 
         return user;
     }
+
+    // Updates name and/or email for the given user
+    public User updateProfile(User user, String name, String email) {
+        if (name != null) {
+            user.setName(name);
+        }
+
+        if (email != null) {
+            user.setEmail(email);
+        }
+
+        return userRepository.save(user);
+    }
 }
