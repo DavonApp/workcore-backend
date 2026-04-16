@@ -1,19 +1,30 @@
 package com.todolist.todolist.service;
 
 import com.todolist.todolist.model.User;
+import com.todolist.todolist.model.Task;
+
 import com.todolist.todolist.repository.UserRepository;
+import com.todolist.todolist.repository.TaskRepository;
+
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 
 @Service
 public class UserService {
-
+    
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+
+    @Autowired
+    private TaskRepository taskRepository;
 
     // Constructor Injection
     // Spring injects BCryptPasswordEncoder bean from SecurityConfig
@@ -91,5 +102,20 @@ public class UserService {
 
         // Saves the user
         userRepository.save(user);
+    }
+
+    @Transactional
+    public void deleteUserbyId(int userId) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Delete all tasks belonging to this user
+        List<Task> userTasks = taskRepository.findByUser(user);
+        if (userTasks != null && !userTasks.isEmpty()) {
+            taskRepository.deleteAll(userTasks);
+        }
+
+        // Delete the user
+        userRepository.delete(user);
     }
 }
