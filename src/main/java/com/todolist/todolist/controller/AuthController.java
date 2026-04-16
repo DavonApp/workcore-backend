@@ -4,6 +4,7 @@ import com.todolist.todolist.dto.AuthRequest;
 import com.todolist.todolist.model.User;
 import com.todolist.todolist.service.UserService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.http.ResponseEntity;
@@ -58,6 +59,13 @@ public class AuthController {
             return ResponseEntity.status(401).body("Not logged in");
         }
         return ResponseEntity.ok(java.util.Map.of("userId", userId));
+    }
+
+    @PostMapping("/api/auth/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) session.invalidate();
+        return ResponseEntity.ok("Logged out");
     }
 
     
