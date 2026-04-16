@@ -56,8 +56,31 @@ public class UserController {
             "name",  updated.getName()  != null ? updated.getName()  : "",
             "email", updated.getEmail() != null ? updated.getEmail() : ""
         ));
-    }  
+    }
+    
+    @PutMapping ("/password") 
+    public ResponseEntity<?> changePassword(@RequestBody Map<String, String> body, HttpSession session) {
+        User user = (User) session.getAttribute("user");
 
+        if (user == null) {
+            return ResponseEntity.status(401). body("Not logged in");
+        }
+
+        try {
+            userService.changePassword(
+                user, 
+                body.get("currentPassword"),
+                body.get("newPassword")
+            );
+
+            // refresh session user
+            session.setAttribute("user", user);
+
+            return ResponseEntity.ok("Password updated successfully");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 
     @PostMapping ("/register")
     public User registerUser (@RequestBody User userRequest){
