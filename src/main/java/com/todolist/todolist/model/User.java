@@ -15,6 +15,7 @@ public class User {
     private int id;
     private String email;
     private String password;
+    private String name;
 
     @OneToMany(mappedBy = "user")
     private List<Task> tasks = new ArrayList<>();
@@ -42,6 +43,10 @@ public class User {
         return password;
     }
 
+    public String getName () {
+        return name;
+    }
+
     public List<Task> getTasks(){
         return tasks;
     }
@@ -59,12 +64,16 @@ public class User {
         this.password = password;
     }
 
+    public void setName (String name) {
+        this.name = name;
+    }
+
     public void setTasks(List<Task> tasks){
         this.tasks = tasks;
     }
 
     @Override
     public String toString(){
-        return "User{" + "id=" + id + ", email=" + email + '\'' + '}';
+        return "User{" + "id=" + id + ", email=" + email + ", name=" + name + '}';
     }
 }
