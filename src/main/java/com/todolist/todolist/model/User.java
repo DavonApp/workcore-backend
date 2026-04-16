@@ -2,6 +2,7 @@ package com.todolist.todolist.model;
 
 import jakarta.persistence.*;
 import java.util.List;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 
@@ -15,6 +16,7 @@ public class User {
     private int id;
     private String email;
     private String password;
+    private LocalDateTime passwordLastChanged;
     private String name;
 
     @OneToMany(mappedBy = "user")
@@ -43,6 +45,10 @@ public class User {
         return password;
     }
 
+    public LocalDateTime getPasswordLastChanged() {
+        return passwordLastChanged;
+    }
+
     public String getName () {
         return name;
     }
@@ -62,6 +68,10 @@ public class User {
 
     public void setPassword (String password){
         this.password = password;
+    }
+
+    public void setPasswordLastChanged (LocalDateTime date) {
+        this.passwordLastChanged = date;
     }
 
     public void setName (String name) {
