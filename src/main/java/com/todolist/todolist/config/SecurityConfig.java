@@ -20,7 +20,7 @@ import java.util.List;
 public class SecurityConfig {
 
     @Autowired
-    private OAuth2SuccessHandler OAuth2SuccessHandler;
+    private OAuth2SuccessHandler oAuth2SuccessHandler;
 
     @Autowired
     private JwtAuthFilter jwtAuthFilter;
@@ -43,6 +43,9 @@ public class SecurityConfig {
                 .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
                 .requestMatchers("/api/tasks/**").permitAll()  // keep this for now
                 .anyRequest().permitAll()  // keep this for now too             
+            )
+            .oauth2Login(oauth -> oauth
+                .successHandler(oAuth2SuccessHandler)
             )
             .formLogin(form -> form.disable()) // Login handled in AuthController
             .httpBasic(basic -> basic.disable()) // No browser popups
