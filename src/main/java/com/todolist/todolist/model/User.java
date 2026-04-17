@@ -18,13 +18,15 @@ public class User {
     private String password;
     private LocalDateTime passwordLastChanged;
     private String name;
+    private String provider; // "LOCAL" or "GOOGLE"
+    private String providerId; // Google's unique ID for the user
 
     @OneToMany(mappedBy = "user")
     private List<Task> tasks = new ArrayList<>();
 
     // Default Constructor
     public User () {
-
+        this.provider = "LOCAL";
     }
 
     // Constructor for registering users
@@ -53,8 +55,16 @@ public class User {
         return name;
     }
 
-    public List<Task> getTasks(){
+    public List<Task> getTasks() {
         return tasks;
+    }
+
+    public String getProvider() {
+        return provider;
+    }
+
+    public String getProviderId() {
+        return providerId;
     }
 
     // Setters
@@ -78,8 +88,16 @@ public class User {
         this.name = name;
     }
 
-    public void setTasks(List<Task> tasks){
+    public void setTasks (List<Task> tasks) {
         this.tasks = tasks;
+    }
+
+    public void setProvider (String provider) {
+        this.provider = provider;
+    }
+
+    public void setProviderId (String providerId) {
+        this.providerId = providerId;
     }
 
     @Override
