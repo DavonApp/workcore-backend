@@ -34,7 +34,7 @@ public class UserService {
     }
 
     public User registerUser (String email, String password){
-        User existingUser = userRepository.findByEmail(email);
+        User existingUser = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
         if(existingUser != null){
             throw new RuntimeException("User already exists");
         } 
@@ -47,7 +47,7 @@ public class UserService {
 
     // Validates credentials and returns the user if correct
     public User loginUser(String email, String password) {
-        User user = userRepository.findByEmail(email);
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
 
         if (user == null) {
             throw new RuntimeException("User not found");
