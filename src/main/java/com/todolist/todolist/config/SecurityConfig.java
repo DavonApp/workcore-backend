@@ -1,10 +1,14 @@
 package com.todolist.todolist.config;
 
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -14,6 +18,12 @@ import java.util.List;
 
 @Configuration
 public class SecurityConfig {
+
+    @Autowired
+    private OAuth2SuccessHandler OAuth2SuccessHandler;
+
+    @Autowired
+    private JwtAuthFilter jwtAuthFilter;
     
     // Spring Security password hashing
     @Bean
@@ -26,11 +36,13 @@ public class SecurityConfig {
         http
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable()) // Disabled for development
+            .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/api/auth/**").permitAll() // Login/Register remains always open
-                .requestMatchers("/api/tasks/**").permitAll()
-                .anyRequest().permitAll()               // Everything else needs login
+                .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
+                .requestMatchers("/api/tasks/**").permitAll()  // keep this for now
+                .anyRequest().permitAll()  // keep this for now too             
             )
             .formLogin(form -> form.disable()) // Login handled in AuthController
             .httpBasic(basic -> basic.disable()) // No browser popups
@@ -40,7 +52,9 @@ public class SecurityConfig {
                 .invalidateHttpSession(true)
                 .logoutSuccessHandler((req, res, auth) ->
                     res.setStatus(200)) // Return 200 instead of redirect on logout
-            );
+            )
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 
