@@ -20,6 +20,8 @@ public class User {
     private String name;
     private String provider; // "LOCAL" or "GOOGLE"
     private String providerId; // Google's unique ID for the user
+    private String resetToken;
+    private LocalDateTime resetTokenExpiry;
 
     @OneToMany(mappedBy = "user")
     private List<Task> tasks = new ArrayList<>();
@@ -67,6 +69,14 @@ public class User {
         return providerId;
     }
 
+    public String getResetToken() {
+        return resetToken;
+    }
+
+    public LocalDateTime getResetTokenExpiry() {
+        return resetTokenExpiry;
+    }
+
     // Setters
     public void setId (int id){
         this.id = id;
@@ -98,6 +108,14 @@ public class User {
 
     public void setProviderId (String providerId) {
         this.providerId = providerId;
+    }
+
+    public void setResetToken (String resetToken) {
+        this.resetToken = resetToken;
+    }
+
+    public void setResetTokenExpiry (LocalDateTime resetTokenExpiry) {
+        this.resetTokenExpiry = resetTokenExpiry;
     }
 
     @Override
