@@ -1,10 +1,14 @@
 package com.todolist.todolist.controller;
 
+import com.todolist.todolist.config.AuthHelper;
 import com.todolist.todolist.model.Task;
+import com.todolist.todolist.model.User;
 import com.todolist.todolist.service.TaskService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,6 +19,9 @@ import java.util.List;
 @RequestMapping("/api/tasks")
 public class TaskController {
     private final TaskService taskService;
+
+    @Autowired
+    private AuthHelper authHelper;
 
     public TaskController(TaskService taskService){
         this.taskService = taskService;
@@ -28,27 +35,41 @@ public class TaskController {
     }
 
     @GetMapping
-    public List<Task> getAllTasks(HttpSession session) {
-        System.out.println("TASK SESSION: " + session.getId());
-        System.out.println("USER ID: " + session.getAttribute("userId"));
-        
-        return taskService.getTasksForUser(getUserIdFromSession(session));
+    public List<Task> getAllTasks(HttpServletRequest request, HttpSession session) {
+        User user = authHelper.getCurrentUser(request, session);
+        if (user == null) {
+            throw new RuntimeException("Not logged in");
+        }
+        return taskService.getTasksForUser(user.getId());
     }
     
 
     @PostMapping
-    public Task addTask(@RequestBody Task task, HttpSession session) {
-        return taskService.addTask(task, getUserIdFromSession(session));
+    public Task addTask(@RequestBody Task task, HttpServletRequest request, HttpSession session) {
+        User user = authHelper.getCurrentUser(request, session);
+        if (user == null) {
+            throw new RuntimeException("Not logged in");
+        }
+        return taskService.addTask(task, user.getId());
     }
 
     @DeleteMapping("/{id}")
-    public void deleteTask(@PathVariable int id, HttpSession session){
+    public void deleteTask(@PathVariable int id,  HttpServletRequest request, HttpSession session){
+        User user = authHelper.getCurrentUser(request, session);
+        if (user == null) {
+            throw new RuntimeException("Not logged in");
+        }
         taskService.deleteTask(id, getUserIdFromSession(session));
     }
 
     @PutMapping("/{id}")
-    public void updateTask(@PathVariable int id, @RequestBody Task updatedTask, HttpSession session) {
-        taskService.updateTask(id, updatedTask, getUserIdFromSession(session));
-    }
+    public void updateTask(@PathVariable int id, @RequestBody Task updatedTask,
+                           HttpServletRequest request, HttpSession session) {
+        User user = authHelper.getCurrentUser(request, session);
+        if (user == null){
 
+            throw new RuntimeException("Not logged in");
+        }
+        taskService.updateTask(id, updatedTask, user.getId());
+    }
 }

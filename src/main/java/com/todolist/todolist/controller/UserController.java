@@ -1,10 +1,13 @@
 package com.todolist.todolist.controller;
 
-
+import com.todolist.todolist.config.AuthHelper;
 import com.todolist.todolist.model.User;
 import com.todolist.todolist.service.UserService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +23,9 @@ public class UserController {
 
     private final UserService userService;
 
+    @Autowired
+    private AuthHelper authHelper;
+
     // Construtor Injection
     public UserController(UserService userService){
         this.userService = userService;
@@ -28,8 +34,8 @@ public class UserController {
 
     // Returns current user's name + email
     @GetMapping ("/profile")
-    public ResponseEntity<?> getProfile(HttpSession session) {
-        User user = (User) session.getAttribute("user");
+    public ResponseEntity<?> getProfile(HttpServletRequest request, HttpSession session) {
+        User user = authHelper.getCurrentUser(request, session);
         if (user == null) {
             return ResponseEntity.status(401).body("Not logged in");
         }
@@ -43,8 +49,9 @@ public class UserController {
 
     // updates name and/or email
     @PutMapping ("/profile")
-    public ResponseEntity<?> updateProfile(@RequestBody Map<String, String> body, HttpSession session) {
-        User user = (User) session.getAttribute("user");
+    public ResponseEntity<?> updateProfile(@RequestBody Map<String, String> body, HttpServletRequest request, 
+                                            HttpSession session) {
+        User user = authHelper.getCurrentUser(request, session);
         if (user == null) {
             return ResponseEntity.status(401).body("Not logged in");
         }
@@ -62,11 +69,15 @@ public class UserController {
     }
     
     @PutMapping ("/password") 
-    public ResponseEntity<?> changePassword(@RequestBody Map<String, String> body, HttpSession session) {
-        User user = (User) session.getAttribute("user");
+    public ResponseEntity<?> changePassword(@RequestBody Map<String, String> body, HttpServletRequest request, HttpSession session) {
+        User user = authHelper.getCurrentUser(request, session);
 
         if (user == null) {
             return ResponseEntity.status(401). body("Not logged in");
+        }
+
+        if ("GOOGLE".equals(user.getProvider())) {
+            return ResponseEntity.badRequest().body("Google account users cannot change their password here.");
         }
 
         try {
@@ -91,9 +102,9 @@ public class UserController {
     }
 
     @DeleteMapping("/account")
-    public ResponseEntity<String> deleteAccount(HttpSession session) {
+    public ResponseEntity<String> deleteAccount(HttpServletRequest request, HttpSession session) {
         // Look for the user object stored from login
-        User user = (User) session.getAttribute("user");
+        User user = authHelper.getCurrentUser(request, session);
 
         if(user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not logged in");
