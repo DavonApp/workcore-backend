@@ -43,6 +43,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         // Send token back to your frontend
         getRedirectStrategy().sendRedirect(request, response,
-            "http://localhost:5500/oauth-callback.html?token=" + token);
+            "https://workcore-app.netlify.app/oauth-callback.html?token=" + token);
     }
 }
