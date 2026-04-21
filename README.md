@@ -183,8 +183,9 @@ I created WorkCore Backend to gain hands-on experience building production-style
 * Unit/integration testing
 * Docker containerization
 * CI/CD pipeline
-* Task categories and due dates
+* More Robust Task categories
 * Multi-user collaboration
+* Custom User profile images
 
 ---
 
