@@ -42,6 +42,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**").permitAll() // Login/Register remains always open
                 .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
                 .requestMatchers(HttpMethod.DELETE, "/api/tasks/**").authenticated()
+                .requestMatchers("/actuator/health").permitAll() // Site health endpoint
                 .anyRequest().authenticated()             
             )
             .oauth2Login(oauth -> oauth
