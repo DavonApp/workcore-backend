@@ -39,11 +39,16 @@ public class SecurityConfig {
             .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers("/api/auth/**").permitAll() // Login/Register remains always open
-                .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
-                .requestMatchers(HttpMethod.DELETE, "/api/tasks/**").authenticated()
-                .requestMatchers("/actuator/health").permitAll() // Site health endpoint
-                .anyRequest().authenticated()             
+
+                .requestMatchers(
+                    "/api/auth/**",
+                    "/api/contact/**",
+                    "/oauth2/**",
+                    "/login/oauth2/**",
+                    "/actuator/health"
+                ).permitAll()
+
+                .anyRequest().authenticated()
             )
             .oauth2Login(oauth -> oauth
                 .successHandler(oAuth2SuccessHandler)
