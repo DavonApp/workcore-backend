@@ -105,8 +105,8 @@ public ResponseEntity<?> forgotPassword(@RequestBody Map<String, String> body) {
         userService.initiatePasswordReset(body.get("email"));
         return ResponseEntity.ok("Reset email sent");
     } catch (RuntimeException e) {
-        // Always return 200 so you don't reveal which emails exist
-        return ResponseEntity.ok("Reset email sent");
+        e.printStackTrace();
+        return ResponseEntity.status(500).body(e.getMessage());
     }
 }
 
