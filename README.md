@@ -128,6 +128,13 @@ Frontend → Controllers → Services → Repositories → PostgreSQL Database
 | POST   | /api/contact |
 
 ---
+
+## Database Schema
+
+<img width="411" height="821" alt="Untitled" src="https://github.com/user-attachments/assets/24650a6a-7d7e-4c9e-8e3e-310a415d90e1" />
+
+---
+
 ## Database Design
 
 WorkCore uses a relational PostgreSQL database hosted on Supabase.
